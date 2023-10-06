@@ -1,38 +1,48 @@
 <script lang="ts">
+	import Banner from '@/components/banner.svelte'
 	import { LottiePlayer } from '@lottiefiles/svelte-lottie-player'
 </script>
 
+<svelte:head>
+	<title>FocusVision</title>
+</svelte:head>
+
 <main>
-	<div class="flex bg-brand-background h-screen items-center justify-center p-12">
+	<div
+		class="flex h-screen items-center justify-center bg-brand-background p-12"
+	>
 		<div class="p-8">
-			<div
-				class="text-5xl py-12 text-center select-none flex items-center justify-start gap-1"
-			>
-				<div class="p-1 font-extrabold bg-brand-primary text-white">FOCUS</div>
-				<div class="text-brand-primary-dark">VISION</div>
+			<div class="py-12 text-5xl">
+				<Banner />
 			</div>
-			<p class="text-lg w-2/3">
+			<p class="w-2/3 text-lg">
 				A video conferencing application that uses AI to help you focus on the
 				meeting.
 			</p>
-			<div class="flex flex-col md:flex-row items-start md:items-center justify-start gap-4 mt-8">
-				<button class="px-4 py-2 bg-brand-primary text-white rounded-lg">
-					New meeting
+			<div
+				class="mt-8 flex flex-col items-start justify-start gap-4 md:flex-row md:items-center"
+			>
+				<button
+					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
+				>
+					Join
 				</button>
 				<p class="font-sans">or</p>
 				<div>
 					<input
 						type="text"
-						class="px-4 py-2 border border-gray-300 rounded-lg w-2/3"
+						class="w-2/3 rounded-lg border border-gray-300 px-4 py-2"
 						placeholder="Enter meeting code"
 					/>
-					<button class="px-4 py-2 bg-brand-primary text-white rounded-lg hover:bg-brand-accent">
+					<button
+						class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
+					>
 						Join
 					</button>
 				</div>
 			</div>
 		</div>
-		<div class="p-8 hidden md:block">
+		<div class="hidden p-8 md:block">
 			<LottiePlayer
 				background="transparent"
 				width={500}
