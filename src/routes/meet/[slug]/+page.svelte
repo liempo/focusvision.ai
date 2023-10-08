@@ -1,15 +1,20 @@
-<script>
+<script lang="ts">
 	import Banner from '@/components/banner.svelte'
 
+	import type { PageData } from './$types'
+	export let data: PageData
+
 	let meetingTitle = 'Machine Learning 101'
-	let meetingMembersCount = 5
+	let meetingMembersCount = 20
 </script>
 
-<main class="h-screen bg-brand-background">
+<main class="flex h-full min-h-screen flex-col bg-brand-background pb-12">
 	<header class="mb-4 flex items-center justify-between px-4 py-2">
 		<title class="flex items-center justify-start space-x-4 text-lg">
-			<Banner />
-			<separator class="h-10 w-px bg-gray-400" />
+			<div class="hidden sm:block">
+				<Banner />
+			</div>
+			<separator class="hidden h-10 w-px bg-gray-400 sm:block" />
 			<h1 class="font-sans text-gray-700">{meetingTitle}</h1>
 		</title>
 		<actions class="flex items-center justify-end space-x-2">
@@ -29,11 +34,11 @@
 						fill-opacity="0.98"
 					/>
 				</svg>
-				<p class="font-sans text-sm">Start Attendance</p>
+				<p class="hidden font-sans text-sm sm:block">Start Attendance</p>
 			</button>
 
 			<button
-				class="flex items-center space-x-2 rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
+				class="h-max-fit flex items-center space-x-2 text-ellipsis rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
 			>
 				<svg
 					width="24"
@@ -54,4 +59,31 @@
 			</button>
 		</actions>
 	</header>
+	<div class="h-full w-full">
+		<!-- Create a flex row that continues to the next line after 3 items -->
+		<div class="flex flex-wrap justify-center gap-2">
+			{#each data.members as member}
+				<div
+					class="flex h-48 w-48 flex-col items-center justify-center rounded-lg bg-white shadow-md md:h-72 md:w-72"
+				>
+					<div
+						class="flex h-full w-full flex-col items-center justify-center gap-2"
+					>
+						<div
+							class="flex h-32 w-32 items-center justify-center rounded-full bg-gray-200"
+						>
+							<p class="text-center font-sans text-5xl text-white">
+								{member.name[0] ?? ''}
+							</p>
+						</div>
+						<div class="flex flex-col items-center justify-center">
+							<p class="text-md font-sans text-gray-700">
+								{member.name}
+							</p>
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	</div>
 </main>
