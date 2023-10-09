@@ -60,7 +60,6 @@
 		</actions>
 	</header>
 	<div class="h-full w-full">
-		<!-- Create a flex row that continues to the next line after 3 items -->
 		<div class="flex flex-wrap justify-center gap-2">
 			{#each data.members as member}
 				<div

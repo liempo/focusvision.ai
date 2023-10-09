@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+
 	import Banner from '@/components/banner.svelte'
+	import MicIcon from '@/components/mic_icon.svelte'
+	import CameraIcon from '@/components/camera_icon.svelte'
 
 	import type { PageData } from './$types'
 	export let data: PageData
@@ -100,19 +103,7 @@
 					}}
 					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
 				>
-					{#if profile.audio}
-						<img
-							class="h-6 w-6 bg-transparent"
-							src="/icons/mic_on.svg"
-							alt="Mic muted"
-						/>
-					{:else}
-						<img
-							class="h-6 w-6 bg-transparent"
-							src="/icons/mic_off.svg"
-							alt="Mic on"
-						/>
-					{/if}
+					<MicIcon active={profile.audio} />
 				</button>
 
 				<button
@@ -121,19 +112,7 @@
 					}}
 					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
 				>
-					{#if profile.video}
-						<img
-							class="h-6 w-6 bg-transparent"
-							src="/icons/video_on.svg"
-							alt="Video off"
-						/>
-					{:else}
-						<img
-							class="h-6 w-6 bg-transparent"
-							src="/icons/video_off.svg"
-							alt="Video on"
-						/>
-					{/if}
+					<CameraIcon active={profile.video} />
 				</button>
 
 				<button
