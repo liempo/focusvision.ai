@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { getInitials } from '@/lib/utils'
 
 	import Banner from '@/components/banner.svelte'
 	import MicIcon from '@/components/mic_icon.svelte'
@@ -76,9 +77,9 @@
 				<div
 					class="absolute left-0 top-0 flex h-full w-full rounded-2xl bg-white shadow-sm"
 				>
-					<div class="m-auto h-32 w-32 rounded-full bg-brand-accent p-10">
+					<div class="m-auto h-32 w-32 rounded-full bg-brand-accent py-10">
 						<p class="text-center font-sans text-5xl text-white">
-							{profile.name[0] ?? ''}
+							{getInitials(profile.name)}
 						</p>
 					</div>
 				</div>

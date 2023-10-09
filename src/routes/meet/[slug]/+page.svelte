@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { getInitials } from '@/lib/utils'
+
 	import Banner from '@/components/banner.svelte'
+	import MicIcon from '@/components/mic_icon.svelte'
 
 	import type { PageData } from './$types'
 	export let data: PageData
@@ -59,12 +62,16 @@
 			</button>
 		</actions>
 	</header>
-	<div class="h-full w-full">
-		<div class="flex flex-wrap justify-center gap-2">
-			{#each data.members as member}
-				<div
-					class="flex h-48 w-48 flex-col items-center justify-center rounded-lg bg-white shadow-md md:h-72 md:w-72"
-				>
+	<div class="px-4 py-2 w-full gap-2 flex flex-wrap justify-center">
+		{#each data.members as member}
+			<div class="relative rounded-lg bg-white shadow-md h-96 w-96">
+				{#if member.video}
+					<img
+						src="https://thispersondoesnotexist.com"
+						alt="Video demo"
+						class="h-full w-full object-cover rounded-lg"
+					/>
+				{:else}
 					<div
 						class="flex h-full w-full flex-col items-center justify-center gap-2"
 					>
@@ -72,17 +79,23 @@
 							class="flex h-32 w-32 items-center justify-center rounded-full bg-gray-200"
 						>
 							<p class="text-center font-sans text-5xl text-white">
-								{member.name[0] ?? ''}
-							</p>
-						</div>
-						<div class="flex flex-col items-center justify-center">
-							<p class="text-md font-sans text-gray-700">
-								{member.name}
+								{getInitials(member.name)}
 							</p>
 						</div>
 					</div>
+				{/if}
+				<div
+					class="absolute bottom-0 left-0 flex items-center justify-start py-1 px-4 m-2 gap-2 bg-brand-primary bg-opacity-50 rounded-full"
+				>
+					<p class="text-md font-sans text-white">
+						{member.name}
+					</p>
+					<MicIcon
+						active={member.audio}
+						size={20}
+					/>
 				</div>
-			{/each}
-		</div>
+			</div>
+		{/each}
 	</div>
 </main>
