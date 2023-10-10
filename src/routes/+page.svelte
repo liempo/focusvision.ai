@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Banner from '@/components/banner.svelte'
 	import { LottiePlayer } from '@lottiefiles/svelte-lottie-player'
-	let meetingCode: String = ''
+	let joinCode: String = ''
 </script>
 
 <svelte:head>
@@ -31,14 +31,14 @@
 				<p class="font-sans">or</p>
 				<div>
 					<input
-						bind:value={meetingCode}
+						bind:value={joinCode}
 						type="text"
 						class="w-2/3 rounded-lg border border-gray-300 px-4 py-2"
 						placeholder="Enter meeting code"
 					/>
 					<button
 						class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent disabled:bg-gray-500"
-						disabled={meetingCode.length != 6}
+						disabled={!joinCode}
 					>
 						Join
 					</button>

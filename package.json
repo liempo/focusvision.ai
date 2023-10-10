@@ -32,6 +32,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@lottiefiles/svelte-lottie-player": "^0.3.0"
+		"@lottiefiles/svelte-lottie-player": "^0.3.0",
+		"agora-rtc-sdk-ng": "^4.19.0",
+		"agora-token": "^2.0.3"
 	}
 }

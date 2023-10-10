@@ -43,7 +43,7 @@
 </script>
 
 <svelte:head>
-	<title>FocusVision | {data.meetingCode}</title>
+	<title>FocusVision | {data.channel}</title>
 </svelte:head>
 
 <main class="flex h-screen flex-col bg-brand-background">
