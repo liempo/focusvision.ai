@@ -1,7 +1,8 @@
 import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
 
-import { RtcTokenBuilder, RtcRole } from 'agora-token'
+import pkg from 'agora-token'
+const { RtcTokenBuilder, RtcRole } = pkg
 
 type LoadOutput = {
 	uid: number
