@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
+
 	import { getInitials } from '@/lib/utils'
+	import { prefStore } from '@/lib/store'
 
 	import Banner from '@/components/banner.svelte'
 	import MicIcon from '@/components/mic_icon.svelte'
@@ -14,8 +17,9 @@
 
 	let profile = {
 		name: '',
-		audio: true,
-		video: true
+		isAudioOn: true,
+		isVideoOn: true,
+		currentChannel: data.channel
 	}
 
 	const getStream = async () => {
@@ -63,7 +67,7 @@
 
 		<div class={`relative my-4 ${stream ? 'animate-grow' : 'hidden'}`}>
 			<video
-				class={`rounded-2xl shadow-xl ${!profile.video && 'opacity-0'}`}
+				class={`rounded-2xl shadow-xl ${!profile.isVideoOn && 'opacity-0'}`}
 				width="640"
 				height="480"
 				autoplay={true}
@@ -73,7 +77,7 @@
 				<track kind="captions" />
 			</video>
 
-			{#if !profile.video}
+			{#if !profile.isVideoOn}
 				<div
 					class="absolute left-0 top-0 flex h-full w-full rounded-2xl bg-white shadow-sm"
 				>
@@ -100,23 +104,27 @@
 			<div class="grid grid-flow-col gap-2">
 				<button
 					on:click={() => {
-						profile.audio = !profile.audio
+						profile.isAudioOn = !profile.isAudioOn
 					}}
 					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
 				>
-					<MicIcon active={profile.audio} />
+					<MicIcon active={profile.isAudioOn} />
 				</button>
 
 				<button
 					on:click={() => {
-						profile.video = !profile.video
+						profile.isVideoOn = !profile.isVideoOn
 					}}
 					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
 				>
-					<CameraIcon active={profile.video} />
+					<CameraIcon active={profile.isVideoOn} />
 				</button>
 
 				<button
+					on:click={() => {
+						prefStore.set(profile)
+						goto(`/meet/${data.channel}`)
+					}}
 					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent disabled:bg-gray-500"
 					disabled={!profile.name}
 				>

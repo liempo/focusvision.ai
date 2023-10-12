@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Banner from '@/components/banner.svelte'
 	import { LottiePlayer } from '@lottiefiles/svelte-lottie-player'
-	let joinCode: String = ''
+
+	let joinCode: String = 'ajg-420-4ev'
 </script>
 
 <svelte:head>
@@ -24,7 +25,8 @@
 				class="mt-8 flex flex-col items-start justify-start gap-4 md:flex-row md:items-center"
 			>
 				<button
-					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent"
+					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent disabled:bg-gray-500"
+					disabled
 				>
 					New meeting
 				</button>
@@ -35,13 +37,16 @@
 						type="text"
 						class="w-2/3 rounded-lg border border-gray-300 px-4 py-2"
 						placeholder="Enter meeting code"
+						disabled
 					/>
-					<button
-						class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent disabled:bg-gray-500"
-						disabled={!joinCode}
-					>
-						Join
-					</button>
+					<a href={`/join/${joinCode}`}>
+						<button
+							class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent disabled:bg-gray-500"
+							disabled={!joinCode}
+						>
+							Join
+						</button>
+					</a>
 				</div>
 			</div>
 		</div>
