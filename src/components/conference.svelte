@@ -40,6 +40,7 @@
 				await client.subscribe(user, type)
 				user.audioTrack?.play()
 			} else if (type === 'video') {
+				user.videoTrack?.play(`participant-video-${user.uid}`)
 				await client.subscribe(user, type)
 			}
 		})
