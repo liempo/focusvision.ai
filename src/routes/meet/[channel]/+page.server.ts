@@ -5,6 +5,7 @@ import { get } from 'svelte/store'
 import { profileStore } from '@/lib/store.js'
 
 import pkg from 'agora-token'
+import { parse } from 'svelte/compiler'
 const { RtcTokenBuilder, RtcRole } = pkg
 
 type LoadOutput = {
@@ -14,12 +15,27 @@ type LoadOutput = {
 	token: string
 }
 
-export const load = async ({ params: { channel } }): Promise<LoadOutput> => {
+export const load = async ({
+	request,
+	params: { channel }
+}): Promise<LoadOutput> => {
+	const cookie = request.headers.get('cookie')
+	const uidStr = cookie
+		? cookie
+				.split(';')
+				.find((str) => str.trim().startsWith('uid='))
+				?.split('=')[1]
+		: null
+
+	if (!uidStr) {
+		throw error(401, 'Invalid user')
+	}
+
 	if (!channel) {
 		throw error(404, 'Invalid meeting')
 	}
 
-	const uid = get(profileStore).uid
+	const uid = parseInt(uidStr)
 	const appId = env.VITE_AGORA_APP_ID
 	const appCertificate = env.VITE_AGORA_APP_CERTIFICATE
 

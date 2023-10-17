@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte'
 	import { goto } from '$app/navigation'
 
-	import { getInitials } from '@/lib/utils'
+	import { generateUID, getInitials } from '@/lib/utils'
 	import { prefStore, profileStore } from '@/lib/store'
 
 	import Banner from '@/components/banner.svelte'
@@ -123,8 +123,10 @@
 				</button>
 
 				<button
-					on:click={() => {
-						goto(`/meet/${data.channel}`)
+					on:click={async () => {
+						if (!document.cookie || !document.cookie.includes('uid'))
+							document.cookie = `uid=${generateUID()}`
+						await goto(`/meet/${data.channel}`)
 					}}
 					class="rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-accent disabled:bg-gray-500"
 					disabled={!$profileStore.name}
