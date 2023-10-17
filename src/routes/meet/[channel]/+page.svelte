@@ -2,6 +2,9 @@
 	import { onMount } from 'svelte'
 	import { fly } from 'svelte/transition'
 
+	import { getInitials } from '@/lib/utils'
+	import { prefStore } from '@/lib/store'
+
 	import Banner from '@/components/banner.svelte'
 	import MicIcon from '@/components/mic_icon.svelte'
 
@@ -9,7 +12,6 @@
 
 	import type { PageData } from './$types'
 	export let data: PageData
-	console.log('Data', data)
 
 	let Conference: typeof import('@/components/conference.svelte').default
 	onMount(async () => {
@@ -62,7 +64,7 @@
 					alt="Members"
 					class="h-6 w-6"
 				/>
-				<p class="font-sans text-sm">{users.length}</p>
+				<p class="font-sans text-sm">{users.length + 1}</p>
 			</button>
 		</actions>
 	</header>
@@ -106,14 +108,46 @@
 						/>
 					</svg>
 				</header>
+
 				<ul class="flex flex-col divide-y divide">
+					<div class="flex justify-between py-4">
+						<div class="flex gap-2">
+							<div
+								class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-accent"
+							>
+								<p class="text-center font-sans text-xs text-white">
+									{getInitials('Test Account')}
+								</p>
+							</div>
+							<p class="font-sans text-gray-700">
+								{data.uid}
+							</p>
+						</div>
+						<div
+							class="flex items-center justify-center h-6 w-6 rounded-full bg-gray-500"
+						>
+							<MicIcon
+								active={$prefStore.isAudioOn}
+								size={16}
+							/>
+						</div>
+					</div>
 					{#each users as user}
 						<div class="flex justify-between py-4">
-							<p class="font-sans text-gray-700">
-								{user.uid}
-							</p>
+							<div class="flex gap-2">
+								<div
+									class="flex h-6 w-6 items-center justify-center rounded-full bg-brand-accent"
+								>
+									<p class="text-center font-sans text-xs text-white">
+										{getInitials('Test Account')}
+									</p>
+								</div>
+								<p class="font-sans text-gray-700">
+									{user.uid}
+								</p>
+							</div>
 							<div
-								class="flex items-center justify-center h-6 w-6 rounded-full bg-brand-primary bg-opacity-50"
+								class="flex items-center justify-center h-6 w-6 rounded-full bg-gray-500"
 							>
 								<MicIcon
 									active={user.hasAudio}
