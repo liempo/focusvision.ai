@@ -40,8 +40,8 @@
 				await client.subscribe(user, type)
 				user.audioTrack?.play()
 			} else if (type === 'video') {
-				user.videoTrack?.play(`participant-video-${user.uid}`)
 				await client.subscribe(user, type)
+				user.videoTrack?.play(`participant-video-${user.uid}`)
 			}
 		})
 
@@ -65,7 +65,7 @@
 
 		audio?.setEnabled($prefStore.isAudioOn)
 		video?.setEnabled($prefStore.isVideoOn)
-		video?.play('me')
+		video?.play('local-video')
 
 		await client.publish([audio, video])
 	}
@@ -92,7 +92,7 @@
 <conference class="px-4 py-2 w-full gap-2 flex flex-wrap justify-center">
 	<div class="relative rounded-lg bg-white shadow-md h-96 w-96">
 		<video
-			id="me"
+			id="local-video"
 			class={`h-full w-full object-cover rounded-lg ${
 				$prefStore.isVideoOn ? 'block' : 'hidden'
 			}`}
@@ -129,7 +129,7 @@
 	{#each users as user}
 		<div class="relative rounded-lg bg-white shadow-md h-96 w-96">
 			<video
-				id="participant-video-{user.uid}"
+				id={`participant-video-${user.uid}`}
 				class={`h-full w-full object-cover rounded-lg ${
 					user.hasVideo ? 'block' : 'hidden'
 				}`}
