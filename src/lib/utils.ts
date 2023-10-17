@@ -9,4 +9,8 @@ const getInitials = (name: string) => {
 	return name[0].toUpperCase()
 }
 
-export { getInitials }
+const generateUID = () => {
+	return crypto.getRandomValues(new Uint32Array(1))[0] % 1000000
+}
+
+export { getInitials, generateUID }

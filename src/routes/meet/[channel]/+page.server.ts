@@ -1,6 +1,9 @@
 import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
 
+import { get } from 'svelte/store'
+import { profileStore } from '@/lib/store.js'
+
 import pkg from 'agora-token'
 const { RtcTokenBuilder, RtcRole } = pkg
 
@@ -16,7 +19,7 @@ export const load = async ({ params: { channel } }): Promise<LoadOutput> => {
 		throw error(404, 'Invalid meeting')
 	}
 
-	const uid = 0
+	const uid = get(profileStore).uid
 	const appId = env.VITE_AGORA_APP_ID
 	const appCertificate = env.VITE_AGORA_APP_CERTIFICATE
 

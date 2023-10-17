@@ -1,14 +1,22 @@
 import { writable } from 'svelte/store'
+import { generateUID } from './utils'
+
+export type Profile = {
+	uid: number
+	name?: string
+	channel?: string
+}
 
 export type Preferences = {
-	name: string
 	isVideoOn: boolean
 	isAudioOn: boolean
-	currentChannel?: string
 }
 
 export const prefStore = writable<Preferences>({
-	name: 'Anonymous',
-	isVideoOn: false,
-	isAudioOn: false
+	isVideoOn: true,
+	isAudioOn: true
+})
+
+export const profileStore = writable<Profile>({
+	uid: generateUID()
 })
