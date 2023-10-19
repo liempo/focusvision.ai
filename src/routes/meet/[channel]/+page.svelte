@@ -3,10 +3,10 @@
 	import { fly } from 'svelte/transition'
 
 	import { getInitials } from '@/lib/utils'
-	import { prefStore } from '@/lib/store'
 
 	import Banner from '@/components/banner.svelte'
 	import MicIcon from '@/components/mic_icon.svelte'
+	import CameraIcon from '@/components/camera_icon.svelte'
 
 	import type { IAgoraRTCRemoteUser } from 'agora-rtc-sdk-ng'
 
@@ -20,6 +20,8 @@
 
 	let users: IAgoraRTCRemoteUser[] = []
 	let isParticipantsOpen = false
+	let isAudioOn = data.defaultAudioState
+	let isVideoOn = data.defaultVideoState
 </script>
 
 <svelte:head>
@@ -68,11 +70,40 @@
 			</button>
 		</actions>
 	</header>
+
 	<svelte:component
 		this={Conference}
 		{...data}
 		bind:users
+		bind:isAudioOn
+		bind:isVideoOn
 	/>
+
+	<controls
+		class="fixed bottom-4 left-4 gap-4 flex px-6 py-2 rounded-full bg-brand-accent bg-opacity-75"
+	>
+		<button
+			on:click={() => {
+				isAudioOn = !isAudioOn
+			}}
+		>
+			<MicIcon
+				active={isAudioOn}
+				size={20}
+			/>
+		</button>
+		<button
+			on:click={() => {
+				isVideoOn = !isVideoOn
+			}}
+		>
+			<CameraIcon
+				active={isVideoOn}
+				size={20}
+			/>
+		</button>
+	</controls>
+
 	{#if isParticipantsOpen}
 		<participants
 			class="fixed top-0 right-0 bottom-0 mt-16 pb-4 px-4 w-full flex items-center justify-end"
@@ -127,7 +158,7 @@
 							class="flex items-center justify-center h-6 w-6 rounded-full bg-gray-500"
 						>
 							<MicIcon
-								active={$prefStore.isAudioOn}
+								active={isAudioOn}
 								size={16}
 							/>
 						</div>

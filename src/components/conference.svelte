@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-
 	import { getInitials } from '@/lib/utils'
-	import { prefStore, type Preferences } from '@/lib/store'
 
 	import MicIcon from '@/components/mic_icon.svelte'
-	import CameraIcon from '@/components/camera_icon.svelte'
 
 	import AgoraRTC, {
 		type IAgoraRTCClient,
@@ -15,9 +12,13 @@
 	} from 'agora-rtc-sdk-ng'
 
 	export let uid: number
+	export let name: string
 	export let appId: string
 	export let channel: string
 	export let token: string
+	export let isAudioOn: boolean
+	export let isVideoOn: boolean
+	export let names: Record<string, string> = {}
 
 	export let users: IAgoraRTCRemoteUser[] = []
 	let audio: ILocalAudioTrack | null = null
@@ -29,6 +30,9 @@
 	const init = async () => {
 		client.on('user-joined', async (user) => {
 			console.log('user-joined', user.uid)
+			names[user.uid] = await fetch(`/api/profile/${user.uid}`).then((res) =>
+				res.text()
+			)
 			users = [...users, user]
 		})
 
@@ -63,18 +67,15 @@
 		await client.join(appId, channel, token, uid)
 		;[audio, video] = await AgoraRTC.createMicrophoneAndCameraTracks()
 
-		audio?.setEnabled($prefStore.isAudioOn)
-		video?.setEnabled($prefStore.isVideoOn)
 		video?.play('local-video')
 
 		await client.publish([audio, video])
 	}
 
-	prefStore.subscribe(async (p: Preferences) => {
-		console.log('Pref', p)
-		await audio?.setEnabled(p.isAudioOn)
-		await video?.setEnabled(p.isVideoOn)
-	})
+	$: {
+		audio?.setEnabled(isAudioOn)
+		video?.setEnabled(isVideoOn)
+	}
 
 	onMount(async () => {
 		await init()
@@ -94,7 +95,7 @@
 		<video
 			id="local-video"
 			class={`h-full w-full object-cover rounded-lg ${
-				$prefStore.isVideoOn ? 'block' : 'hidden'
+				isVideoOn ? 'block' : 'hidden'
 			}`}
 		>
 			<track kind="captions" />
@@ -102,14 +103,14 @@
 
 		<div
 			class={`flex h-full w-full flex-col items-center justify-center gap-2 ${
-				$prefStore.isVideoOn ? 'hidden' : 'block'
+				isVideoOn ? 'hidden' : 'block'
 			}`}
 		>
 			<div
 				class="flex h-32 w-32 items-center justify-center rounded-full bg-gray-200"
 			>
 				<p class="text-center font-sans text-5xl text-white">
-					{getInitials('A')}
+					{getInitials(name)}
 				</p>
 			</div>
 		</div>
@@ -117,10 +118,10 @@
 			class="absolute bottom-0 left-0 flex items-center justify-start py-1 px-4 m-2 gap-2 bg-brand-primary bg-opacity-50 rounded-full"
 		>
 			<p class="text-md font-sans text-white">
-				{uid}
+				{name}
 			</p>
 			<MicIcon
-				active={$prefStore.isAudioOn}
+				active={isAudioOn}
 				size={20}
 			/>
 		</div>
@@ -145,7 +146,15 @@
 					class="flex h-32 w-32 items-center justify-center rounded-full bg-gray-200"
 				>
 					<p class="text-center font-sans text-5xl text-white">
-						{getInitials('A')}
+						{#if names[user.uid]}
+							{getInitials(name)}
+						{:else}
+							<img
+								src="/icons/user.svg"
+								alt="User Icon"
+								class="w-full h-full"
+							/>
+						{/if}
 					</p>
 				</div>
 			</div>
@@ -153,7 +162,11 @@
 				class="absolute bottom-0 left-0 flex items-center justify-start py-1 px-4 m-2 gap-2 bg-brand-primary bg-opacity-50 rounded-full"
 			>
 				<p class="text-md font-sans text-white">
-					{user.uid}
+					{#if names[user.uid]}
+						{names[user.uid]}
+					{:else}
+						{'Loading'}
+					{/if}
 				</p>
 				<MicIcon
 					active={user.hasAudio}
@@ -162,36 +175,4 @@
 			</div>
 		</div>
 	{/each}
-	<controls
-		class="fixed bottom-4 left-4 gap-4 flex px-6 py-2 rounded-full bg-brand-accent bg-opacity-75"
-	>
-		<button
-			on:click={() => {
-				prefStore.update((p) => {
-					let pref = p
-					pref.isAudioOn = !pref.isAudioOn
-					return pref
-				})
-			}}
-		>
-			<MicIcon
-				active={$prefStore.isAudioOn}
-				size={20}
-			/>
-		</button>
-		<button
-			on:click={() => {
-				prefStore.update((p) => {
-					let pref = p
-					pref.isVideoOn = !pref.isVideoOn
-					return pref
-				})
-			}}
-		>
-			<CameraIcon
-				active={$prefStore.isVideoOn}
-				size={20}
-			/>
-		</button>
-	</controls>
 </conference>

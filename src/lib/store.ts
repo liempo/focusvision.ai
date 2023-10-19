@@ -7,16 +7,6 @@ export type Profile = {
 	channel?: string
 }
 
-export type Preferences = {
-	isVideoOn: boolean
-	isAudioOn: boolean
-}
-
-export const prefStore = writable<Preferences>({
-	isVideoOn: true,
-	isAudioOn: true
-})
-
 export const profileStore = writable<Profile>({
 	uid: generateUID()
 })

@@ -1,52 +1,61 @@
 import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
 
-import { get } from 'svelte/store'
-import { profileStore } from '@/lib/store.js'
+import { kv } from '@vercel/kv'
 
 import pkg from 'agora-token'
-import { parse } from 'svelte/compiler'
 const { RtcTokenBuilder, RtcRole } = pkg
+
+type MeetingCookieData = {
+	uid: number
+	isAudioOn: boolean
+	isVideoOn: boolean
+}
 
 type LoadOutput = {
 	uid: number
+	name: string
 	appId: string
 	channel: string
 	token: string
+	defaultAudioState: boolean
+	defaultVideoState: boolean
 }
 
 export const load = async ({
-	request,
+	cookies,
 	params: { channel }
 }): Promise<LoadOutput> => {
-	const cookie = request.headers.get('cookie')
-	const uidStr = cookie
-		? cookie
-				.split(';')
-				.find((str) => str.trim().startsWith('uid='))
-				?.split('=')[1]
-		: null
-
-	if (!uidStr) {
-		throw error(401, 'Invalid user')
+	const uidStr = cookies.get('uid')
+	if (!uidStr) throw error(401, 'Invalid cookies set')
+	const cookie: MeetingCookieData = {
+		uid: parseInt(uidStr),
+		isAudioOn: cookies.get('audio') == '1',
+		isVideoOn: cookies.get('video') == '1'
 	}
+	console.log('Cookie data', cookie)
 
-	if (!channel) {
-		throw error(404, 'Invalid meeting')
-	}
+	if (!channel) throw error(404, 'Invalid meeting')
 
-	const uid = parseInt(uidStr)
+	const { uid } = cookie
 	const appId = env.VITE_AGORA_APP_ID
 	const appCertificate = env.VITE_AGORA_APP_CERTIFICATE
 
-	if (channel === env.VITE_AGORA_TEST_CHANNEL) {
+	const name: string | null = await kv.get(`name:${uid}`)
+	if (!name) {
+		throw error(401, `${uid} not found`)
+	}
+
+	if (channel === env.VITE_AGORA_TEST_CHANNEL)
 		return {
 			uid,
+			name,
 			appId,
 			channel: env.VITE_AGORA_TEST_CHANNEL,
-			token: env.VITE_AGORA_TEST_TOKEN
+			token: env.VITE_AGORA_TEST_TOKEN,
+			defaultAudioState: cookie.isAudioOn,
+			defaultVideoState: cookie.isVideoOn
 		}
-	}
 
 	const token = RtcTokenBuilder.buildTokenWithUid(
 		appId, // appID,
@@ -57,13 +66,15 @@ export const load = async ({
 		600, // token_expire
 		Math.floor(Date.now() / 1000) + 3600 // privilegeExpiredTs
 	)
-
 	console.log('Token generated for channel', channel, token)
 
 	return {
 		uid,
+		name,
 		appId,
 		channel,
-		token
+		token,
+		defaultAudioState: cookie.isAudioOn,
+		defaultVideoState: cookie.isVideoOn
 	}
 }
